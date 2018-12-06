@@ -1,55 +1,93 @@
 package fczachor.cipher;
 
-import javax.swing.JOptionPane;
+/**
+ * KEYWORD CIPHER
+ * This class extends MonoAlphabeticCipher.
+ * Generates a secret alphabet
+ * from a given keyword or password.
+ * @author Florian Czachor
+ * @version 27.11.2018
+ */
 
-public class KeywordCipher extends MonoAlphabeticCipher{
-	
-	
-	public KeywordCipher(String keyword) throws Egseptions{
-		this.setKeyword(keyword);
+public class KeywordCipher extends MonoAlphabeticCipher {
+	public KeywordCipher(String key){
+		this.newAlphabet(key);
 	}
-	public void setKeyword(String keyword) throws Egseptions{
-		String sAlpha = "";
-		String alpha ="abcdefghijklmnopqrstuvwxyzäöüß";
-		keyword = keyword.toLowerCase();
+	
+	// Methods
+	
+	//NEW ALPHABET
+	public void newAlphabet(String key){
+		key = key.toLowerCase();
+		String finishedAlphabet = "";
 		
-        for(int i=0; i<keyword.length(); i++) {
-                char a = keyword.charAt(i);
-                if(a > 'a'-1 && a < 'z'+1 || a == 'ä' || a == 'ö' || a == 'ü' || a == 'ß') {
-                            
-                }else {
-                	throw new Egseptions("it contains wrong symbols"); 
-                }
-        }
-        boolean[] ga = new boolean[30];
-        for(int i = 0; i< ga.length; i++) {
-        	ga[i] = false;
-        }
-        for(int i=0; i<keyword.length(); i++) {
-        	for(int j=0; j<alpha.length(); j++) {
-        		if(keyword.charAt(i) == alpha.charAt(j) && ga[j]==false) {
-        			ga[j] = true;
-        			sAlpha = sAlpha + keyword.charAt(i);
-        			break;
-        		}
-        	}
-        }
-	    
-        for(int i=0; i<alpha.length(); i++) {
-        	boolean exist = false;
-        	for(int j=0; j<sAlpha.length(); j++) {
-        		if(alpha.charAt(i) == sAlpha.charAt(j)){
-        			exist = true;
-        			break;
-        		}
-        	}
-        	if(exist == true) {
-    			
-    		}else {
-    			sAlpha = sAlpha + alpha.charAt(i);
-    		}
-        	
-        }
-        super.setSecretAlphabet(sAlpha);
+		for (int i = 0; i < key.length(); i++) {
+			boolean used = false;
+			for (int j = 0; j < finishedAlphabet.length(); j++) {
+				if (finishedAlphabet.charAt(j) == key.charAt(i))
+					used = true;
+			}
+			if (!used) {
+				switch (key.charAt(i)) {
+				case 'ä':
+					finishedAlphabet = finishedAlphabet + 'ä';
+					break;
+				case 'ö':
+					finishedAlphabet = finishedAlphabet + 'ö';
+					break;
+				case 'ü':
+					finishedAlphabet = finishedAlphabet + 'ü';
+					break;
+				case 'ß':
+					finishedAlphabet = finishedAlphabet + 'ß';
+					break;
+				default:
+					if (key.charAt(i) >= 97 && key.charAt(i) <= 122)
+						finishedAlphabet += key.charAt(i);
+				}
+			}
+		}
+		int keywordLength = finishedAlphabet.length();
+		for (int i = 0; i < 30; i++) {
+			boolean used2 = false;
+			char nextLetter = (char) (97 + i);
+			switch (nextLetter) {
+			case 123:
+				nextLetter = 'ä';
+				break;
+			case 124:
+				nextLetter = 'ö';
+				break;
+			case 125:
+				nextLetter = 'ü';
+				break;
+			case 126:
+				nextLetter = 'ß';
+				break;
+			}
+			for (int j = 0; j < keywordLength; j++) {
+				if (nextLetter == finishedAlphabet.charAt(j))
+					used2 = true;
+			}
+			if (!used2) {
+				switch (nextLetter) {
+				case 123:
+					finishedAlphabet = finishedAlphabet +'ä';
+					break;
+				case 124:
+					finishedAlphabet = finishedAlphabet +'ö';
+					break;
+				case 125:
+					finishedAlphabet = finishedAlphabet +'ü';
+					break;
+				case 126:
+					finishedAlphabet = finishedAlphabet +'ß';
+					break;
+				default:
+					finishedAlphabet = finishedAlphabet + nextLetter;
+				}
+			}
+		}
+		super.setSecretAlphabet(finishedAlphabet);
 	}
 }
